@@ -5,6 +5,7 @@ import steam2Url from './assets/steam2.webp'
 import steam3Url from './assets/steam3.webp'
 import steam4Url from './assets/steam4.webp'
 import steam5Url from './assets/steam5.webp'
+import oroUrl from './assets/oroW.webp'
 
 const steamSpriteUrls = [
   steam1Url,
@@ -29,16 +30,13 @@ export default function MistySaunaPrototype() {
       <div className="sauna-heat" aria-hidden="true" />
 
       <div className="sauna-title">
-        <div>
-          <h1>Sauna</h1>
-
-          <p>
-            Move through the steam
-          </p>
-        </div>
+        <h1>
+          <img src={oroUrl} alt="Oro Logo" className="sauna-logo" />
+        </h1>
       </div>
 
       <MistEffect canvasRef={canvasRef} />
+      
     </main>
   )
 }
@@ -107,8 +105,8 @@ function MistEffect({ canvasRef }) {
         y: startY,
         scale,
         opacity: isWisp
-          ? 0.042 + Math.random() * 0.058
-          : 0.04 + Math.random() * 0.062,
+          ? 0.07 + Math.random() * 0.09
+          : 0.06 + Math.random() * 0.08,
         rotation: (Math.random() - 0.5) * (isWisp ? 0.035 : 0.018),
         drift: isWisp
           ? 20 + Math.random() * 42
@@ -245,8 +243,8 @@ function MistEffect({ canvasRef }) {
       )
 
       const alphaScale = pointer.influence
-      gradient.addColorStop(0, `rgba(0,0,0,${0.34 * alphaScale})`)
-      gradient.addColorStop(0.42, `rgba(0,0,0,${0.15 * alphaScale})`)
+      gradient.addColorStop(0, `rgba(0,0,0,${0.6 * alphaScale})`)
+      gradient.addColorStop(0.42, `rgba(0,0,0,${0.3 * alphaScale})`)
       gradient.addColorStop(1, 'rgba(0,0,0,0)')
 
       ctx.fillStyle = gradient
