@@ -80,6 +80,7 @@ function MistEffect({ canvasRef }) {
       vx: 0,
       vy: 0,
       active: false,
+      influence: 0,
     }
 
     function createSteamLayer(index, sprite, type = 'veil') {
@@ -152,7 +153,7 @@ function MistEffect({ canvasRef }) {
     }
 
     function applyPointerFlow(layer, drawnWidth, drawnHeight) {
-      if (!pointer.active || layer.type !== 'wisp') return
+      if (!pointer.active || layer.type !== 'wisp' || pointer.influence <= 0.01) return
 
       const centerX = layer.x + drawnWidth / 2
       const centerY = layer.y + drawnHeight / 2
@@ -163,7 +164,7 @@ function MistEffect({ canvasRef }) {
 
       if (distance > radius) return
 
-      const force = ((radius - distance) / radius) ** 2.4
+      const force = ((radius - distance) / radius) ** 2.4 * pointer.influence
       const angle = Math.atan2(dy, dx)
       const tangent = angle + Math.PI / 2
       const handSpeed = Math.min(22, Math.hypot(pointer.vx, pointer.vy))
@@ -202,24 +203,38 @@ function MistEffect({ canvasRef }) {
 
       if (layer.x > width + drawnWidth * 0.25) {
         layer.x = -drawnWidth * 0.65
+        layer.flowX = 0
+        layer.flowY = 0
+        layer.angularVelocity = 0
       } else if (layer.x < -drawnWidth * 0.75) {
         layer.x = width + drawnWidth * 0.15
+        layer.flowX = 0
+        layer.flowY = 0
+        layer.angularVelocity = 0
       }
 
       if (layer.y < -drawnHeight * 0.42) {
         layer.y = height - drawnHeight * 0.58
+        layer.flowX = 0
+        layer.flowY = 0
+        layer.angularVelocity = 0
+      } else if (layer.y > height + drawnHeight * 0.58) {
+        layer.y = -drawnHeight * 0.42
+        layer.flowX = 0
+        layer.flowY = 0
+        layer.angularVelocity = 0
       }
 
       return Math.sin(time * 0.00012 + layer.phase) * layer.drift
     }
 
     function clearMistAroundPointer() {
-      if (!pointer.active) return
+      if (!pointer.active || pointer.influence <= 0.01) return
 
       ctx.save()
       ctx.globalCompositeOperation = 'destination-out'
 
-      const radius = Math.min(190, Math.max(120, width * 0.12))
+      const radius = Math.min(190, Math.max(120, width * 0.12)) * pointer.influence
       const gradient = ctx.createRadialGradient(
         pointer.x,
         pointer.y,
@@ -229,8 +244,9 @@ function MistEffect({ canvasRef }) {
         radius
       )
 
-      gradient.addColorStop(0, 'rgba(0,0,0,0.34)')
-      gradient.addColorStop(0.42, 'rgba(0,0,0,0.15)')
+      const alphaScale = pointer.influence
+      gradient.addColorStop(0, `rgba(0,0,0,${0.34 * alphaScale})`)
+      gradient.addColorStop(0.42, `rgba(0,0,0,${0.15 * alphaScale})`)
       gradient.addColorStop(1, 'rgba(0,0,0,0)')
 
       ctx.fillStyle = gradient
@@ -281,6 +297,14 @@ function MistEffect({ canvasRef }) {
       }
 
       clearMistAroundPointer()
+
+      pointer.vx *= 0.85
+      pointer.vy *= 0.85
+      if (Math.abs(pointer.vx) < 0.001) pointer.vx = 0
+      if (Math.abs(pointer.vy) < 0.001) pointer.vy = 0
+
+      pointer.influence *= 0.95
+      if (pointer.influence < 0.001) pointer.influence = 0
     }
 
     function updatePointer(x, y) {
@@ -289,6 +313,7 @@ function MistEffect({ canvasRef }) {
       pointer.x = x
       pointer.y = y
       pointer.active = true
+      pointer.influence = Math.min(1.0, pointer.influence + 0.18)
     }
 
     function onMouseMove(event) {
@@ -305,16 +330,21 @@ function MistEffect({ canvasRef }) {
 
     function deactivatePointer() {
       pointer.active = false
+      pointer.influence = 0
     }
 
     async function loadSprites() {
-      const images = await Promise.all(steamSpriteUrls.map(loadSteamImage))
+      try {
+        const images = await Promise.all(steamSpriteUrls.map(loadSteamImage))
 
-      if (cancelled) return
+        if (cancelled) return
 
-      steamLayers = createSteamLayers(images)
+        steamLayers = createSteamLayers(images)
 
-      animate(steamLayers)
+        animate(steamLayers)
+      } catch (error) {
+        console.error('Failed to load steam sprite images:', error)
+      }
     }
 
     loadSprites()
