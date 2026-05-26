@@ -86,8 +86,8 @@ function MistEffect({ canvasRef }) {
       const baseScale = Math.max(width / sprite.width, height / sprite.height)
       const isWisp = type === 'wisp'
       const depth = isWisp
-        ? 0.16 + Math.random() * 0.34
-        : 0.72 + Math.random() * 0.52
+        ? 0.14 + Math.random() * 0.36
+        : 0.66 + Math.random() * 0.62
       const scale = baseScale * depth
       const layerWidth = sprite.width * scale
       const layerHeight = sprite.height * scale
@@ -106,9 +106,9 @@ function MistEffect({ canvasRef }) {
         y: startY,
         scale,
         opacity: isWisp
-          ? 0.035 + Math.random() * 0.055
-          : 0.028 + Math.random() * 0.052,
-        rotation: (Math.random() - 0.5) * 0.12,
+          ? 0.042 + Math.random() * 0.058
+          : 0.04 + Math.random() * 0.062,
+        rotation: (Math.random() - 0.5) * (isWisp ? 0.035 : 0.018),
         drift: isWisp
           ? 20 + Math.random() * 42
           : 28 + Math.random() * 58,
@@ -126,8 +126,8 @@ function MistEffect({ canvasRef }) {
 
     function createSteamLayers(sprites) {
       const isCompact = width < 700
-      const veilCount = isCompact ? 4 : 7
-      const wispCount = isCompact ? 24 : 42
+      const veilCount = isCompact ? 14 : 24
+      const wispCount = isCompact ? 96 : 168
       const veils = Array.from({ length: veilCount }, (_, index) =>
         createSteamLayer(index, sprites[index % sprites.length], 'veil')
       )
@@ -175,7 +175,7 @@ function MistEffect({ canvasRef }) {
       layer.flowY += Math.sin(tangent) * Math.cos(layer.phase) * force * 0.14
       layer.flowX += pointer.vx * handInfluence
       layer.flowY += pointer.vy * handInfluence
-      layer.angularVelocity += Math.sin(angle + layer.phase) * force * 0.0018
+      layer.angularVelocity += Math.sin(angle + layer.phase) * force * 0.00028
     }
 
     function updateLayer(layer, time) {
@@ -255,7 +255,7 @@ function MistEffect({ canvasRef }) {
       )
       ctx.rotate(
         layer.rotation +
-          Math.sin(time * 0.00008 + layer.phase) * 0.035
+          Math.sin(time * 0.00008 + layer.phase) * (layer.type === 'wisp' ? 0.008 : 0.004)
       )
       ctx.drawImage(
         layer.sprite,
