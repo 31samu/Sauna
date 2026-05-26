@@ -5,9 +5,9 @@
   overflow: hidden;
   isolation: isolate;
   background:
-    radial-gradient(circle at 50% 78%, rgba(126, 55, 24, 0.38), transparent 34rem),
-    radial-gradient(circle at 18% 20%, rgba(180, 126, 76, 0.18), transparent 28rem),
-    linear-gradient(180deg, #24180f 0%, #170f0b 54%, #080706 100%);
+    radial-gradient(circle at 50% 78%, #A15C38, transparent 34rem),
+    /* radial-gradient(circle at 18% 20%, #6B3A32, transparent 28rem), */
+    linear-gradient(180deg, #24180f 0%, #170f0b 54%, #080706 100%); 
 }
 
 .sauna-title {
@@ -64,7 +64,7 @@
   width: auto;
   margin: 0 auto;
   display: block;
-  filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 40px rgba(255, 236, 214, 0.22));
+  /*filter: drop-shadow(0 4px 24px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 40px rgba(255, 236, 214, 0.22));*/
 }
 
 @media (max-width: 640px) {

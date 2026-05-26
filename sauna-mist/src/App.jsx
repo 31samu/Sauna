@@ -5,7 +5,7 @@ import steam2Url from './assets/steam2.webp'
 import steam3Url from './assets/steam3.webp'
 import steam4Url from './assets/steam4.webp'
 import steam5Url from './assets/steam5.webp'
-import oroUrl from './assets/oroW.webp'
+import oroUrl from './assets/oroY.webp'
 
 const steamSpriteUrls = [
   steam1Url,
@@ -301,7 +301,7 @@ function MistEffect({ canvasRef }) {
       if (Math.abs(pointer.vx) < 0.001) pointer.vx = 0
       if (Math.abs(pointer.vy) < 0.001) pointer.vy = 0
 
-      pointer.influence *= 0.95
+      pointer.influence *= 0.98
       if (pointer.influence < 0.001) pointer.influence = 0
     }
 
@@ -311,7 +311,7 @@ function MistEffect({ canvasRef }) {
       pointer.x = x
       pointer.y = y
       pointer.active = true
-      pointer.influence = Math.min(1.0, pointer.influence + 0.18)
+      pointer.influence = Math.min(1.0, pointer.influence + 0.06)
     }
 
     function onMouseMove(event) {
