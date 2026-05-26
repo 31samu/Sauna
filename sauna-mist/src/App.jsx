@@ -125,10 +125,13 @@ function MistEffect({ canvasRef }) {
     }
 
     function createSteamLayers(sprites) {
-      const veils = Array.from({ length: 7 }, (_, index) =>
+      const isCompact = width < 700
+      const veilCount = isCompact ? 4 : 7
+      const wispCount = isCompact ? 24 : 42
+      const veils = Array.from({ length: veilCount }, (_, index) =>
         createSteamLayer(index, sprites[index % sprites.length], 'veil')
       )
-      const wisps = Array.from({ length: 42 }, (_, index) =>
+      const wisps = Array.from({ length: wispCount }, (_, index) =>
         createSteamLayer(
           index + veils.length,
           sprites[(index + 2) % sprites.length],
@@ -276,25 +279,6 @@ function MistEffect({ canvasRef }) {
       for (const layer of layers) {
         drawLayer(layer, time)
       }
-
-      ctx.save()
-      ctx.globalAlpha = 0.045
-      ctx.fillStyle = 'rgba(255,255,255,1)'
-      ctx.filter = 'blur(80px)'
-      for (const layer of layers.slice(0, 4)) {
-        ctx.beginPath()
-        ctx.ellipse(
-          layer.x + width * 0.45,
-          height * 0.62,
-          width * 0.34,
-          height * 0.14,
-          0,
-          0,
-          Math.PI * 2
-        )
-        ctx.fill()
-      }
-      ctx.restore()
 
       clearMistAroundPointer()
     }
