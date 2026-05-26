@@ -1,29 +1,32 @@
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
+import './App.css'
 
 export default function MistySaunaPrototype() {
   const canvasRef = useRef(null)
 
   return (
-    <div className="w-full h-screen bg-[#1b140f] relative overflow-hidden">
+    <main className="sauna-scene" aria-label="Interactive misty sauna">
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full"
+        className="mist-canvas"
+        aria-hidden="true"
       />
 
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-        <div className="text-center text-white/80 px-6">
-          <h1 className="text-5xl md:text-7xl font-light tracking-wide mb-4">
-            Sauna
-          </h1>
+      <div className="sauna-vignette" aria-hidden="true" />
+      <div className="sauna-heat" aria-hidden="true" />
 
-          <p className="text-xs md:text-sm uppercase tracking-[0.4em] text-white/50">
+      <div className="sauna-title">
+        <div>
+          <h1>Sauna</h1>
+
+          <p>
             Move through the steam
           </p>
         </div>
       </div>
 
       <MistEffect canvasRef={canvasRef} />
-    </div>
+    </main>
   )
 }
 
