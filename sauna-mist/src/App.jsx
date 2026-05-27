@@ -61,15 +61,18 @@ function MistEffect({ canvasRef }) {
     let steamLayers = []
 
     function sizeCanvas() {
-      pixelRatio = window.devicePixelRatio || 1
-      width = window.innerWidth
-      height = window.innerHeight
+      // Use visualViewport dimensions when available to account for mobile UI chrome.
+      const vw = typeof window.visualViewport !== 'undefined' ? window.visualViewport.width : window.innerWidth;
+      const vh = typeof window.visualViewport !== 'undefined' ? window.visualViewport.height : window.innerHeight;
+      pixelRatio = window.devicePixelRatio || 1;
+      width = vw;
+      height = vh;
 
-      canvas.width = Math.floor(width * pixelRatio)
-      canvas.height = Math.floor(height * pixelRatio)
-      canvas.style.width = `${width}px`
-      canvas.style.height = `${height}px`
-      ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
+      canvas.width = Math.floor(width * pixelRatio);
+      canvas.height = Math.floor(height * pixelRatio);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     }
 
     sizeCanvas()
@@ -106,9 +109,12 @@ function MistEffect({ canvasRef }) {
         x: startX,
         y: startY,
         scale,
-        opacity: isWisp
+        // Start fully transparent, fade in to base opacity
+        opacity: 0,
+        baseOpacity: isWisp
           ? 0.07 + Math.random() * 0.09
           : 0.06 + Math.random() * 0.08,
+        fadeProgress: 0,
         rotation: (Math.random() - 0.5) * (isWisp ? 0.035 : 0.018),
         drift: isWisp
           ? 20 + Math.random() * 42
@@ -201,28 +207,33 @@ function MistEffect({ canvasRef }) {
 
       applyPointerFlow(layer, drawnWidth, drawnHeight)
 
-      if (layer.x > width + drawnWidth * 0.25) {
-        layer.x = -drawnWidth * 0.65
+      // Reposition sprite to center when it moves far off-screen to keep the scene populated
+      if (
+        layer.x > width + drawnWidth * 0.5 ||
+        layer.x < -drawnWidth * 0.5 ||
+        layer.y < -drawnHeight * 0.5 ||
+        layer.y > height + drawnHeight * 0.5
+      ) {
+        // Place near center with slight random offset
+        layer.x = width / 2 + (Math.random() - 0.5) * width * 0.2
+        layer.y = height / 2 + (Math.random() - 0.5) * height * 0.2
+        // Reset motion parameters
         layer.flowX = 0
         layer.flowY = 0
         layer.angularVelocity = 0
-      } else if (layer.x < -drawnWidth * 0.75) {
-        layer.x = width + drawnWidth * 0.15
-        layer.flowX = 0
-        layer.flowY = 0
-        layer.angularVelocity = 0
+        // Reset fade-in progress
+        layer.fadeProgress = 0
+        // Give a subtle random velocity for natural movement
+        layer.vx = -0.04 + Math.random() * 0.08
+        layer.vy = -0.018 - Math.random() * 0.025
       }
 
-      if (layer.y < -drawnHeight * 0.42) {
-        layer.y = height - drawnHeight * 0.58
-        layer.flowX = 0
-        layer.flowY = 0
-        layer.angularVelocity = 0
-      } else if (layer.y > height + drawnHeight * 0.58) {
-        layer.y = -drawnHeight * 0.42
-        layer.flowX = 0
-        layer.flowY = 0
-        layer.angularVelocity = 0
+      // Incremental fade-in for sprites
+      if (layer.fadeProgress < 1) {
+        layer.fadeProgress = Math.min(1, layer.fadeProgress + 0.01)
+        layer.opacity = layer.baseOpacity * layer.fadeProgress
+      } else {
+        layer.opacity = layer.baseOpacity
       }
 
       return Math.sin(time * 0.00012 + layer.phase) * layer.drift
@@ -235,12 +246,17 @@ function MistEffect({ canvasRef }) {
       ctx.globalCompositeOperation = 'destination-out'
 
       const radius = Math.min(190, Math.max(120, width * 0.12)) * pointer.influence
+      // Horizontal stretch factor
+      const stretchX = 1.5
+      ctx.translate(pointer.x, pointer.y)
+      ctx.scale(stretchX, 1)
+
       const gradient = ctx.createRadialGradient(
-        pointer.x,
-        pointer.y,
+        0,
+        0,
         radius * 0.15,
-        pointer.x,
-        pointer.y,
+        0,
+        0,
         radius
       )
 
@@ -252,7 +268,7 @@ function MistEffect({ canvasRef }) {
       ctx.fillStyle = gradient
 
       ctx.beginPath()
-      ctx.arc(pointer.x, pointer.y, radius, 0, Math.PI * 2)
+      ctx.arc(0, 0, radius, 0, Math.PI * 2)
       ctx.fill()
 
       ctx.restore()
@@ -271,7 +287,7 @@ function MistEffect({ canvasRef }) {
       )
       ctx.rotate(
         layer.rotation +
-          Math.sin(time * 0.00008 + layer.phase) * (layer.type === 'wisp' ? 0.008 : 0.004)
+          Math.sin(time * 0.00008 + layer.phase) * (layer.type === 'wisp' ? 0.016 : 0.008)
       )
       ctx.drawImage(
         layer.sprite,

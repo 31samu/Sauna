@@ -24,11 +24,14 @@ export default function HiddenTexts() {
     const generate = () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
-      const newItems = snippets.map((text) => ({
-        text,
-        x: Math.random() * width,
-        y: Math.random() * height,
-      }));
+        const inset = 30; // distance from edges
+        const safeWidth = Math.max(0, width - inset * 2);
+        const safeHeight = Math.max(0, height - inset * 2);
+        const newItems = snippets.map((text) => ({
+          text,
+          x: inset + Math.random() * safeWidth,
+          y: inset + Math.random() * safeHeight,
+        }));
       setItems(newItems);
     };
 
