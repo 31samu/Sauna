@@ -5,8 +5,7 @@
   overflow: hidden;
   isolation: isolate;
   background:
-    radial-gradient(circle at 50% 78%, #A15C38, transparent 34rem),
-    /* radial-gradient(circle at 18% 20%, #6B3A32, transparent 28rem), */
+    radial-gradient(circle at 50% 60%, #A15C38, transparent 34rem),
     linear-gradient(180deg, #24180f 0%, #170f0b 54%, #080706 100%); 
 }
 
@@ -59,18 +58,22 @@
 @media (max-width: 640px) {
   .sauna-scene {
     background:
-      radial-gradient(ellipse 120% 70% at 50% 74%, rgba(126, 55, 24, 0.3), transparent 68%),
+      radial-gradient(ellipse 120% 70% at 50% 55%, #A15C38, transparent 68%),
       radial-gradient(ellipse 100% 58% at 24% 22%, rgba(180, 126, 76, 0.14), transparent 72%),
       linear-gradient(180deg, #24180f 0%, #170f0b 56%, #080706 100%);
   }
 
   .sauna-vignette {
     background:
-      linear-gradient(90deg, rgba(8, 7, 6, 0.14), transparent 24%, transparent 76%, rgba(8, 7, 6, 0.14)),
+      /* linear-gradient(90deg, rgba(8, 7, 6, 0.14), transparent 24%, transparent 76%, rgba(8, 7, 6, 0.14)), */
       radial-gradient(ellipse 170% 104% at 50% 50%, transparent 64%, rgba(5, 4, 4, 0.24) 100%);
   }
 
   .sauna-title {
     padding-top: clamp(0.5rem, 2vh, 1rem);
+  }
+
+  .sauna-logo {
+    height: clamp(9rem, 12rem, 16rem);
   }
 }
