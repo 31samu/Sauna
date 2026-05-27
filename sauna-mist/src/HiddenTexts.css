@@ -1,0 +1,30 @@
+.hidden-texts {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1.2rem, 2vw, 2rem);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.hidden-text {
+  position: absolute;
+  white-space: nowrap;
+  mix-blend-mode: screen;
+  opacity: 0;
+  animation: fadeIn 1.5s ease-out forwards, float 6s infinite ease-in-out;
+  will-change: transform, opacity;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.05);
+  }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 0.6; }
+}

@@ -5,7 +5,8 @@ import steam2Url from './assets/steam2.webp'
 import steam3Url from './assets/steam3.webp'
 import steam4Url from './assets/steam4.webp'
 import steam5Url from './assets/steam5.webp'
-import oroUrl from './assets/oroY.webp'
+import oroUrl from './assets/oroY.webp';
+import HiddenTexts from './HiddenTexts.jsx'
 
 const steamSpriteUrls = [
   steam1Url,
@@ -35,7 +36,8 @@ export default function MistySaunaPrototype() {
         </h1>
       </div>
 
-      <MistEffect canvasRef={canvasRef} />
+      <HiddenTexts />
+<MistEffect canvasRef={canvasRef} />
       
     </main>
   )
