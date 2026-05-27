@@ -2,7 +2,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Barrio', sans-serif;
   font-size: clamp(1.2rem, 2vw, 2rem);
   color: rgba(255, 255, 255, 0.6);
 }
