@@ -303,8 +303,8 @@ function MistEffect({ canvasRef }) {
       if (Math.abs(pointer.vx) < 0.001) pointer.vx = 0
       if (Math.abs(pointer.vy) < 0.001) pointer.vy = 0
 
-      pointer.influence *= 0.98
-      if (pointer.influence < 0.001) pointer.influence = 0
+      // Keep pointer influence constant for persistent glow
+      pointer.influence = 1
     }
 
     function updatePointer(x, y) {
@@ -313,7 +313,7 @@ function MistEffect({ canvasRef }) {
       pointer.x = x
       pointer.y = y
       pointer.active = true
-      pointer.influence = Math.min(1.0, pointer.influence + 0.06)
+      pointer.influence = 1 // Ensure full influence on movement
     }
 
     function onMouseMove(event) {
@@ -329,8 +329,7 @@ function MistEffect({ canvasRef }) {
     }
 
     function deactivatePointer() {
-      pointer.active = false
-      pointer.influence = 0
+      // No-op: keep pointer active to maintain persistent bright effect
     }
 
     async function loadSprites() {
@@ -354,8 +353,8 @@ function MistEffect({ canvasRef }) {
     window.addEventListener('touchmove', onTouchMove, {
       passive: true,
     })
-    window.addEventListener('mouseleave', deactivatePointer)
-    window.addEventListener('touchend', deactivatePointer)
+    // window.addEventListener('mouseleave', deactivatePointer)
+    // window.addEventListener('touchend', deactivatePointer)
 
     return () => {
       cancelled = true
