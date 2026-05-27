@@ -28,7 +28,7 @@ export default function MistySaunaPrototype() {
       />
 
       <div className="sauna-vignette" aria-hidden="true" />
-      <div className="sauna-heat" aria-hidden="true" />
+      {/* <div className="sauna-heat" aria-hidden="true" /> */}
 
       <div className="sauna-title">
         <h1>
