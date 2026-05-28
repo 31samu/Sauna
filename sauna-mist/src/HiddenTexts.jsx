@@ -15,6 +15,7 @@ const snippets = [
   'Lake',
   'Performance',
   'Sauna',
+  '30. May'
 ];
 
 export default function HiddenTexts() {
